@@ -1,0 +1,29 @@
+def search2(self):
+        lista = []
+        while self.open_nodes != []:
+            node = self.open_nodes.pop(0)
+            if self.problem.goal_test(node.state):
+                self.solution_cost = node.cost
+                self.total_nodes = len(lista)+1 
+                self.solution_length = self.get_number_of_states(node)
+                return self.get_path(node)
+            lnewnodes = []
+            for a in self.problem.domain.actions(node.state):
+                self.solution_cost += self.problem.domain.cost(node.state,a)
+                newstate = self.problem.domain.result(node.state,a)
+                if newstate not in self.get_path(node):
+                    newnode = SearchNode(newstate,node) 
+                    newnode.cost = node.cost+self.problem.domain.cost(node.state,a) 
+                    newnode.depth = node.depth+1
+                    newnode.evalfunc = newnode.cost + self.problem.domain.heuristic(newstate,self.problem.goal)
+                    newnode.children = []
+                    node.children.append(newnode)
+                    lista.append(newnode)
+                    lnewnodes.append(newnode)
+            if len(lnewnodes):
+                self.terminal_nodes += len(lnewnodes)
+                self.non_terminal_nodes += 1
+            self.terminal_nodes -=1
+            self.add_to_open(lnewnodes)
+            self.update_ancestors(node)
+        return None
