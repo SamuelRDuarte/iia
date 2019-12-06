@@ -43,6 +43,9 @@ class Cidades(SearchDomain):
 
         return math.hypot(c1_x - c2_x,c1_y - c2_y)
 
+    def satisfies(self, state, goal):
+        return state == goal
+        
 cidades_portugal = Cidades( 
                     # Ligacoes por estrada
                     [

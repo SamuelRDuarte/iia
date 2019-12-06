@@ -45,6 +45,12 @@ class SearchDomain(ABC):
     def heuristic(self, state, goal_state):
         pass
 
+    # test if the given "goal" is satisfied in "state"
+    @abstractmethod
+    def satisfies(self, state, goal):
+        pass
+
+
 # Problemas concretos a resolver
 # dentro de um determinado dominio
 class SearchProblem:
@@ -52,8 +58,12 @@ class SearchProblem:
         self.domain = domain
         self.initial = initial
         self.goal = goal
+    '''
     def goal_test(self, state):
         return state == self.goal
+    '''
+    def goal_test(self, state):
+        return self.domain.satisfies(state,self.goal)
 
 # Nos de uma arvore de pesquisa
 class SearchNode:
@@ -101,7 +111,7 @@ class SearchTree:
         return(path)
 
     # procurar a solucao
-    def search(self, limit):
+    def search(self, limit=10):
         maior_custo = 0
         lista = []
         while self.open_nodes != []:
