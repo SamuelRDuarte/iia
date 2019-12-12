@@ -67,20 +67,24 @@ class SearchProblem:
 
 # Nos de uma arvore de pesquisa
 class SearchNode:
-    def __init__(self,state,parent,depth,cost,heuristic): 
+    def __init__(self,state,parent,depth,cost,heuristic, action): 
         self.state = state
         self.parent = parent
         self.depth = depth
         self.cost = cost
         self.heuristic = heuristic
         self.media_detph = 0
+        self.action = action
+    
     def in_parent(self,state):
         if self.parent == None:
             return False
         return self.parent.state == state or self.parent.in_parent(state)
+
     def __str__(self):
         return f"no({self.state},{self.parent},{self.depth}, {self.media_detph})"
         #return "no(" + str(self.state) + "," + str(self.parent) + ")"
+    
     def __repr__(self):
         return str(self)
 
@@ -90,7 +94,7 @@ class SearchTree:
     # construtor
     def __init__(self,problem, strategy='breadth'): 
         self.problem = problem
-        root = SearchNode(problem.initial, None,0,0,self.problem.domain.heuristic(problem.initial,problem.goal))
+        root = SearchNode(problem.initial, None,0,0,self.problem.domain.heuristic(problem.initial,problem.goal),None)
         self.open_nodes = [root]
         self.strategy = strategy
         self.length = 0
@@ -100,15 +104,17 @@ class SearchTree:
         self.cost = 0
         self.lista_cost = []
         self.media_detph = 0
+        self.plan = []
 
     # obter o caminho (sequencia de estados) da raiz ate um no
     def get_path(self,node):
         #return node     #ver a profundidade
         if node.parent == None:
-            return [node.state]
-        path = self.get_path(node.parent)
+            return [node.state], []
+        path, plan = self.get_path(node.parent)
         path += [node.state]
-        return(path)
+        plan += [node.action]
+        return path, plan
 
     # procurar a solucao
     def search(self, limit=10):
@@ -135,7 +141,7 @@ class SearchTree:
                 newstate = self.problem.domain.result(node.state,a)
                 if not node.in_parent(newstate) and node.depth < limit:
                     lnewnodes += [SearchNode(newstate,node,node.depth+1, node.cost + 
-                            self.problem.domain.cost(node.state,a),self.problem.domain.heuristic(newstate,self.problem.goal))]
+                            self.problem.domain.cost(node.state,a),self.problem.domain.heuristic(newstate,self.problem.goal),a)]
                 if len(lnewnodes):
                     self.terminal += len(lnewnodes)
                 else:

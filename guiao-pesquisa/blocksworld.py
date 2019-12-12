@@ -112,10 +112,11 @@ inittime = time.time()
 
 p = SearchProblem(bwdomain,initial_state,goal_state)
 t = SearchTree(p,'depth')
-plan = t.search()
+(path, plan), n_nodes = t.search()
 
 #print(t.plan)
-print(plan)
+for p in plan:
+    print("\t",p)
 print('time=',time.time()-inittime)
 print(len(t.open_nodes),' nodes')
 

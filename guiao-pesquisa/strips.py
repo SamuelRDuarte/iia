@@ -107,7 +107,7 @@ class STRIPS(SearchDomain):
         # tirar as condições negativas do state
         newstate = [s for s in state if s not in action.neg]
         newstate += action.pos # adicionar as condições positivas
-        return newstate
+        return sorted(newstate, key=lambda s: str(s))
 
     def cost(self, state, action):
         return 1
