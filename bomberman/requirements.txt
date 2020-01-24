@@ -1,6 +1,0 @@
-requests
-pygame
-aiohttp
-async-timeout
-websockets
-yarl
